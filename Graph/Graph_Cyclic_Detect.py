@@ -1,17 +1,18 @@
 """
-Depth-First Search (DFS) implementation for a graph.
+Docstring for Graph.Graph_Cyclic_Detect
 
-Depth First Search is said to go "deep" because it visits a vertex, then an adjacent vertex, 
-and then that vertex' adjacent vertex, and so on, and in this way the distance from the starting vertex 
-increases for each recursive iteration.
+Cycle Detection in an undirected graph using Depth-First Search (DFS) and an adjacency matrix.
+A cycle in an undirected graph is a path that starts and ends at the same vertex, with all edges and vertices
+being distinct except for the starting and ending vertex.
 
 How it works:
-
-1. Start DFS traversal on a vertex.
-2. Do a recursive DFS traversal on each of the adjacent vertices as long as they are not already visited.
+1. Perform a DFS traversal of the graph.
+2. Keep track of visited vertices and the parent vertex of the current vertex.
+3. If an adjacent vertex is visited and is not the parent of the current vertex, a cycle is detected.
 
 
 """
+
 
 class Graph:
     def __init__(self, size):
@@ -36,18 +37,25 @@ class Graph:
         for vertex, data in enumerate(self.vertex_data):
             print(f"Vertex {vertex}: {data}")
             
-    def dfs_util(self, v, visited):
+    def dfs_util(self, v, visited, parent):
         visited[v] = True
-        print(self.vertex_data[v], end=' ')
 
         for i in range(self.size):
-            if self.adj_matrix[v][i] == 1 and not visited[i]:
-                self.dfs_util(i, visited)
+            if self.adj_matrix[v][i] == 1:
+                if not visited[i]:
+                    if self.dfs_util(i, visited, v):
+                        return True
+                elif parent != i:
+                    return True
+        return False
 
-    def dfs(self, start_vertex_data):
+    def is_cyclic(self):
         visited = [False] * self.size
-        start_vertex = self.vertex_data.index(start_vertex_data)
-        self.dfs_util(start_vertex, visited)
+        for i in range(self.size):
+            if not visited[i]:
+                if self.dfs_util(i, visited, -1):
+                    return True
+        return False
 
 g = Graph(7)
 
@@ -71,5 +79,4 @@ g.add_edge(1, 5)  # B - F
 
 g.print_graph()
 
-print("\nDepth First Search starting from vertex D:")
-g.dfs('D')
+print("\nGraph has cycle:", g.is_cyclic())
