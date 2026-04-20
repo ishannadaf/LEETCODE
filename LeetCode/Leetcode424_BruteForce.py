@@ -1,0 +1,46 @@
+"""
+
+424. Longest Repeating Character Replacement
+Given a string s that consists of only uppercase English letters, you can perform at most k 
+operations on that string. In one operation, you can choose any character of the string and 
+change it to any other uppercase English character. Find the length of the longest sub-string 
+containing all repeating letters you can get after performing the above operations.
+
+Example 1:
+Input: s = "ABAB", k = 2
+Output: 4
+Explanation: Replace the two 'A's with two 'B's or vice versa.
+
+Example 2:
+Input: s = "AABABBA", k = 1
+Output: 4
+Explanation: Replace the one 'A' in the middle with 'B' and form "AABBBBA". 
+The substring "BBBB" has the longest repeating letters, which is 4.
+
+"""
+
+def characterReplacement(s, k):
+    n = len(s)
+    max_len = 0
+
+    for i in range(n):
+        count = {}
+        max_freq = 0
+
+        for j in range(i, n):
+            count[s[j]] = count.get(s[j], 0) + 1
+            max_freq = max(max_freq, count[s[j]])
+
+            window_size = j - i + 1
+
+            if window_size - max_freq <= k:
+                max_len = max(max_len, window_size)
+
+    return max_len
+
+
+# Time Complexity: O(n^2) - We have a nested loop where the outer loop runs n times and the inner 
+# loop can run up to n times in the worst case.
+# Space Complexity: O(1) - We are using a fixed-size dictionary to count the frequency of characters, 
+# which takes O(1) space since there are only 26 uppercase English letters.
+
